@@ -5,6 +5,8 @@ gem 'sqlite3'
 gem 'puma'
 gem 'uglifier', '>= 1.3.0'
 gem 'bcrypt-ruby'
+gem 'responders'
+gem 'active_model_serializers'
 
 group :development, :test do
   gem 'factory_girl_rails'
