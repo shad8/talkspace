@@ -4,6 +4,7 @@ gem 'rails', '>= 5.0.0.beta3', '< 5.1'
 gem 'sqlite3'
 gem 'puma'
 gem 'uglifier', '>= 1.3.0'
+gem 'bcrypt-ruby'
 
 group :development, :test do
   gem 'factory_girl_rails'
