@@ -10,6 +10,7 @@ gem 'active_model_serializers'
 
 group :development, :test do
   gem 'factory_girl_rails'
+  gem 'json_matchers'
   gem 'pry-rails'
   gem 'rspec-rails', '~> 3.0'
 end
