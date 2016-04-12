@@ -4,10 +4,12 @@ RSpec.describe UsersController, type: :controller do
   let(:user) { create(:user) }
   let(:params) { attributes_for(:user) }
 
+  before { request.env['HTTP_ACCEPT'] = 'application/json' }
+
   describe 'GET index' do
     it 'returns http success' do
       create(:user)
-      get :index, format: :json
+      get :index
       expect(response).to have_http_status(:success)
       expect(response).to match_response_schema('users')
     end
@@ -16,7 +18,7 @@ RSpec.describe UsersController, type: :controller do
   describe 'POST create' do
     it 'returns http created and save user' do
       expect do
-        post :create, params: { user: params }, format: :json
+        post :create, params: { user: params }
       end.to change(User, :count).by(1)
       expect(response).to have_http_status(:created)
       expect(response).to match_response_schema('user')
@@ -24,21 +26,21 @@ RSpec.describe UsersController, type: :controller do
 
     it 'return http unprocessable_entity and not create user' do
       params[:login] = user.login
-      post :create, user: params, format: :json
+      post :create, params: { user: params }
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
 
   describe 'GET show' do
     it 'returns http success' do
-      get :show, params: { id: user }, format: :json
+      get :show, params: { id: user }
       expect(response).to have_http_status(:success)
       expect(response).to match_response_schema('user')
     end
 
     it 'returns http not_found' do
       rand_id = rand(5) + 1
-      get :show, params: { id: rand_id }, format: :json
+      get :show, params: { id: rand_id }
       expect(response).to have_http_status(:not_found)
     end
   end
@@ -46,13 +48,13 @@ RSpec.describe UsersController, type: :controller do
   describe 'PUT update' do
     it 'returns http no_content' do
       params[:email] = rand_email
-      put :update, params: { id: user, user: params }, format: :json
+      put :update, params: { id: user, user: params }
       expect(response).to have_http_status(:no_content)
     end
 
     it 'returns http unprocessable_entity with empty login' do
       params[:login] = ''
-      put :update, params: { id: user, user: params }, format: :json
+      put :update, params: { id: user, user: params }
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
@@ -61,7 +63,7 @@ RSpec.describe UsersController, type: :controller do
     it 'returns http :no_content' do
       user = create(:user)
       expect do
-        delete :destroy, params: { id: user }, format: :json
+        delete :destroy, params: { id: user }
       end.to change(User, :count).by(-1)
       expect(response).to have_http_status(:no_content)
     end
