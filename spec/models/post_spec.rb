@@ -25,4 +25,9 @@ RSpec.describe Post, type: :model do
       expect(post.save).to be_falsey
     end
   end
+
+  it 'has one user' do
+    post = Post.create params
+    expect(post.user).to be
+  end
 end

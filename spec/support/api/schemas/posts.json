@@ -1,10 +1,20 @@
 {
   "type": "object",
-  "required": ["posts"],
   "properties": {
     "posts": {
       "type": "array",
-      "items": { "$ref": "post.json" }
+      "properties": {
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "user_id": { "type": "integer" }
+      },
+      "required": [ "title", "body", "user_id" ]
+    },
+    "users": {
+      "type": "array",
+      "items": { "$ref": "user.json" }
     }
-  }
+  },
+  "required": [ "posts", "users" ]
 }
+

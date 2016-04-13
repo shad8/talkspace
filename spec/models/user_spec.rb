@@ -37,4 +37,9 @@ RSpec.describe User, type: :model do
       expect(user.save).to be_falsey
     end
   end
+
+  it 'has many posts' do
+    user = User.create params
+    expect(user.posts).to be
+  end
 end
