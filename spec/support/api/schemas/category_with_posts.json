@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "user_id": { "type": "integer" },
+        "post_ids": { "type": "array" }
+      },
+      "required": [ "name", "user_id", "post_ids" ]
+    },
+    "users": {
+      "type": "array",
+      "items": { "$ref": "user.json" }
+    },
+    "posts": {
+      "type": "array",
+      "properties": {
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "user_id": { "type": "integer" }
+      },
+      "required": [ "title", "body", "user_id" ]
+    }
+  },
+  "required": [ "category", "users", "posts" ]
+}

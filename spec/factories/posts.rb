@@ -3,5 +3,6 @@ FactoryGirl.define do
     title 'Lorem ipsum'
     body 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
     user
+    category
   end
 end
