@@ -30,8 +30,12 @@ RSpec.describe PostsController, type: :controller do
   end
 
   describe 'POST create' do
-    it 'returns http created and save post' do
+    before do
       params[:user_id] = user_post.user.id
+      params[:category_id] = user_post.category.id
+    end
+
+    it 'returns http created and save post' do
       expect do
         post(:create, params: { post: params })
       end.to change(Post, :count).by(1)

@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "categories": {
+      "type": "array",
+      "properties": {
+        "name": { "type": "string" },
+        "user_id": { "type": "integer" }
+      },
+      "required": [ "name", "user_id" ]
+    }
+  },
+  "required": [ "categories"]
+}

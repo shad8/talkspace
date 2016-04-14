@@ -39,7 +39,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     it 'returns http not_found' do
-      rand_id = rand(5) + 1
+      rand_id = rand(5) + 100
       get :show, params: { id: rand_id }
       expect(response).to have_http_status(:not_found)
     end
