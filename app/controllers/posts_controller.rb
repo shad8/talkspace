@@ -12,7 +12,7 @@ class PostsController < ApplicationController
 
   def create
     @post = Post.create(post_params)
-    respond_with @post
+    respond_with @post, location: nil
   end
 
   def update
@@ -32,6 +32,6 @@ class PostsController < ApplicationController
   end
 
   def post_params
-    params.require(:post).permit(:title, :body, :user_id)
+    params.require(:post).permit(:title, :body, :user_id, :category_id)
   end
 end
