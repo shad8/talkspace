@@ -1,10 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe CategoriesController, type: :controller do
-  before { request.env['HTTP_ACCEPT'] = 'application/json' }
   let(:user) { create(:user, login: rand_text, email: rand_email) }
   let!(:category) { create(:category_with_posts, name: rand_text, user: user) }
   let(:params) { attributes_for(:category) }
+
+  before do
+    request.env['HTTP_ACCEPT'] = 'application/json'
+    request.env['HTTP_AUTHORIZATION'] = encoded_service_token
+  end
 
   describe 'GET index' do
     it 'returns http success' do

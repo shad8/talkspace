@@ -4,7 +4,10 @@ RSpec.describe UsersController, type: :controller do
   let(:user) { create(:user) }
   let(:params) { attributes_for(:user) }
 
-  before { request.env['HTTP_ACCEPT'] = 'application/json' }
+  before do
+    request.env['HTTP_ACCEPT'] = 'application/json'
+    request.env['HTTP_AUTHORIZATION'] = encoded_service_token
+  end
 
   describe 'GET index' do
     it 'returns http success' do

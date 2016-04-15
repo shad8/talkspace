@@ -1,9 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe PostsController, type: :controller do
-  before { request.env['HTTP_ACCEPT'] = 'application/json' }
   let(:user_post) { create(:post) }
   let(:params) { attributes_for(:post) }
+
+  before do
+    request.env['HTTP_ACCEPT'] = 'application/json'
+    request.env['HTTP_AUTHORIZATION'] = encoded_service_token
+  end
 
   # TODO: All post by category
   describe 'GET index' do

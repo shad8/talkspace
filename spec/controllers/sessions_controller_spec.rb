@@ -8,6 +8,7 @@ RSpec.describe SessionsController, type: :controller do
   before do
     request.env['HTTP_ACCEPT'] = 'application/json'
     request.headers['X-User-Token'] = session.token
+    request.env['HTTP_AUTHORIZATION'] = encoded_service_token
   end
 
   describe 'POST create' do
