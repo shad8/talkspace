@@ -28,7 +28,7 @@ RSpec.describe Post, type: :model do
     end
   end
 
-  context 'has one' do
+  context 'belongs_to' do
     let(:post) { Post.create params }
 
     it 'user' do

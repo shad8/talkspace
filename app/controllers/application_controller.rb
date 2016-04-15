@@ -7,7 +7,19 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def record_not_found(error)
-    render json: { errors: error.message }, status: :not_found
+  def errors(key)
+    t(key, scope: :errors)
+  end
+
+  def record_not_found
+    render json: { errors: errors(:not_found) }, status: :not_found
+  end
+
+  def render_unauthenticate
+    render json: { errors: errors(:unauthorized) }, status: :unauthorized
+  end
+
+  def user_token
+    request.headers['X-User-Token']
   end
 end
