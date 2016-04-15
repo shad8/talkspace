@@ -5,7 +5,19 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
   respond_to :json
 
+  before_action :authenticate
+
   private
+
+  def authenticate
+    authenticate_token || render_unauthenticate
+  end
+
+  def authenticate_token
+    authenticate_with_http_token do |token|
+      Rails.application.secrets.authenticate_token == token
+    end
+  end
 
   def errors(key)
     t(key, scope: :errors)
