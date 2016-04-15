@@ -38,7 +38,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  it 'has many posts' do
+  it 'has_many posts' do
     user = User.create params
     expect(user.posts).to be
   end

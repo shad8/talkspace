@@ -18,12 +18,12 @@ RSpec.describe Category, type: :model do
     end
   end
 
-  it 'has many posts' do
+  it 'has_many posts' do
     category = Category.create params
     expect(category.posts).to eq []
   end
 
-  it 'has one user' do
+  it 'belongs_to user' do
     category = Category.create params
     expect(category.user).to be
   end

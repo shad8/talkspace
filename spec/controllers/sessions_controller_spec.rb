@@ -15,21 +15,22 @@ RSpec.describe SessionsController, type: :controller do
     end
 
     context 'with invalid user email' do
-      before {  params[:email] = '' }
-
       it 'returns http :unprocessable_entity' do
+        params[:email] = ''
         post :create, params: { user: params }
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it 'not create session' do
+        params[:email] = ''
         expect do
           post :create, params: { user: params }
         end.to change { Session.count }.by(0)
       end
 
       it 'and wrong password returns http :unprocessable_entity' do
-        post :create, user: { email: user.email, password: 'wrong' }
+        params[:password] = 'wrong'
+        post :create, params: { user: params }
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -45,7 +46,7 @@ RSpec.describe SessionsController, type: :controller do
       expect(response).to have_http_status(:success)
     end
 
-    it 'witout returns http unauthorized' do
+    it 'without access returns http unauthorized' do
       request.headers['X-User-Token'] = rand_text
       put :update
       expect(response).to have_http_status(:unauthorized)

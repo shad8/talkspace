@@ -2,20 +2,17 @@ class SessionsController < ApplicationController
   before_action :set_user, only: [:create]
   before_action :set_token, only: [:update, :destroy]
 
+  # TODO: Refactoring
   def create
     if @user && @user.authenticate(user_params[:password])
-      render_user_with_token
+      render_user
     else
-      render json: { errors: :session_invalid }, status: :unprocessable_entity
+      render json: { errors: errors(:invalid) }, status: :unprocessable_entity
     end
   end
 
   def update
-    if @session
-      render json: @session, status: :ok
-    else
-      render json: { errors: unauthorized }, status: :unauthorized
-    end
+    @session ? respond_with(@session) : render_unauthenticate
   end
 
   def destroy
@@ -23,19 +20,9 @@ class SessionsController < ApplicationController
 
   private
 
-  def render_user_with_token
+  def render_user
     @user.token = Session.create(user: @user).token
-    render json: @user, status: :created
-  end
-
-  # TODO: MOve to I18n
-  def session_invalid
-    'Email or password was invalid'
-  end
-
-  # TODO: MOve to I18n
-  def unauthorized
-    'Unauthorized'
+    respond_with @user, serializer: UserSerializer, location: nil
   end
 
   def set_token
@@ -50,9 +37,5 @@ class SessionsController < ApplicationController
 
   def user_params
     params.require(:user).permit(:email, :login, :password)
-  end
-
-  def user_token
-    request.headers['X-User-Token']
   end
 end

@@ -29,7 +29,7 @@ RSpec.describe CategoriesController, type: :controller do
   end
 
   describe 'POST create' do
-    it 'returns http success and save category' do
+    it 'returns http created and save category' do
       params[:user_id] = rand + 1
       expect do
         post :create, params: { category: params }
