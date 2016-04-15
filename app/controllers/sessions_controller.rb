@@ -16,6 +16,8 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    @session && @session.destroy
+    :no_content
   end
 
   private

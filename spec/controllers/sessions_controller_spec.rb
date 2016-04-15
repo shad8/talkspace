@@ -1,9 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe SessionsController, type: :controller do
-  before { request.env['HTTP_ACCEPT'] = 'application/json' }
   let!(:user) { create(:user) }
+  let(:session) { create(:session, user_id: user.id) }
   let(:params) { attributes_for(:user) }
+
+  before do
+    request.env['HTTP_ACCEPT'] = 'application/json'
+    request.headers['X-User-Token'] = session.token
+  end
 
   describe 'POST create' do
     it 'returns http created and create new session' do
@@ -37,11 +42,7 @@ RSpec.describe SessionsController, type: :controller do
   end
 
   describe 'PUT update' do
-    let(:next_user) { create(:user, login: rand_text, email: rand_email) }
-    let(:session) { create(:session, user_id: next_user.id) }
-
     it 'with access returns http success' do
-      request.headers['X-User-Token'] = session.token
       put :update
       expect(response).to have_http_status(:success)
     end
@@ -54,9 +55,18 @@ RSpec.describe SessionsController, type: :controller do
   end
 
   describe 'DELETE destroy' do
-    it 'returns http success' do
+    it 'returns http :no_content' do
       delete :destroy
-      expect(response).to have_http_status(:success)
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it 'remove user session' do
+      expect { delete :destroy }.to change { Session.count }.by(-1)
+    end
+
+    it 'can not remove not exist user session' do
+      request.headers['X-User-Token'] = rand_text
+      expect { delete :destroy }.to change { Session.count }.by(0)
     end
   end
 end
