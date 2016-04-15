@@ -36,9 +36,19 @@ RSpec.describe SessionsController, type: :controller do
   end
 
   describe 'PUT update' do
-    it 'returns http success' do
+    let(:next_user) { create(:user, login: rand_text, email: rand_email) }
+    let(:session) { create(:session, user_id: next_user.id) }
+
+    it 'with access returns http success' do
+      request.headers['X-User-Token'] = session.token
       put :update
       expect(response).to have_http_status(:success)
+    end
+
+    it 'witout returns http unauthorized' do
+      request.headers['X-User-Token'] = rand_text
+      put :update
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 

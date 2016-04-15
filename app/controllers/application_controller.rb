@@ -5,6 +5,12 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
   respond_to :json
 
+  protected
+
+  def render_unauthenticate
+    render json: { errors: 'Bad credentials' }, status: :unauthorized
+  end
+
   private
 
   def record_not_found(error)

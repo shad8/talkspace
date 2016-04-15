@@ -1,5 +1,6 @@
 class SessionsController < ApplicationController
   before_action :set_user, only: [:create]
+  before_action :set_token, only: [:update, :destroy]
 
   def create
     if @user && @user.authenticate(user_params[:password])
@@ -10,6 +11,11 @@ class SessionsController < ApplicationController
   end
 
   def update
+    if @session
+      render json: @session, status: :ok
+    else
+      render json: { errors: unauthorized }, status: :unauthorized
+    end
   end
 
   def destroy
@@ -27,6 +33,15 @@ class SessionsController < ApplicationController
     'Email or password was invalid'
   end
 
+  # TODO: MOve to I18n
+  def unauthorized
+    'Unauthorized'
+  end
+
+  def set_token
+    @session = Session.find_by(token: user_token)
+  end
+
   def set_user
     @user = User.find_by(
       email: user_params[:email], login: user_params[:login]
@@ -35,5 +50,9 @@ class SessionsController < ApplicationController
 
   def user_params
     params.require(:user).permit(:email, :login, :password)
+  end
+
+  def user_token
+    request.headers['X-User-Token']
   end
 end
