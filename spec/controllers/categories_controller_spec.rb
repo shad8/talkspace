@@ -1,13 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe CategoriesController, type: :controller do
-  let(:user) { create(:user, login: rand_text, email: rand_email) }
+  let(:user) do
+    create(:user_with_sessions, login: rand_text, email: rand_email)
+  end
+  let(:session) { create(:session, user_id: user.id) }
   let!(:category) { create(:category_with_posts, name: rand_text, user: user) }
   let(:params) { attributes_for(:category) }
 
   before do
     request.env['HTTP_ACCEPT'] = 'application/json'
     request.env['HTTP_AUTHORIZATION'] = encoded_service_token
+    request.headers['X-User-Token'] = user.sessions.first.token
   end
 
   describe 'GET index' do
@@ -41,6 +45,14 @@ RSpec.describe CategoriesController, type: :controller do
       expect(response).to have_http_status(:created)
       expect(response).to match_response_schema('category')
     end
+
+    it 'not acces for guest' do
+      request.headers['X-User-Token'] = rand_text
+      expect do
+        post :create, params: { category: params }
+      end.to change(Category, :count).by(0)
+      expect(response).to have_http_status(:forbidden)
+    end
   end
 
   describe 'PUT update' do
@@ -54,6 +66,13 @@ RSpec.describe CategoriesController, type: :controller do
       params[:name] = ''
       put :update, params: { id: category, category: params }
       expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'forbidden for not owner' do
+      user = create(:user_with_sessions, email: rand_email, login: rand_text)
+      request.headers['X-User-Token'] = user.sessions.first.token
+      put :update, params: { id: category, category: params }
+      expect(response).to have_http_status(:forbidden)
     end
   end
 
@@ -70,6 +89,13 @@ RSpec.describe CategoriesController, type: :controller do
       expect do
         delete :destroy, params: { id: category }
       end.to change(Post, :count).by(-post_count)
+    end
+
+    it 'forbidden for not owner' do
+      user = create(:user_with_sessions, email: rand_email, login: rand_text)
+      request.headers['X-User-Token'] = user.sessions.first.token
+      put :update, params: { id: category, category: params }
+      expect(response).to have_http_status(:forbidden)
     end
   end
 end

@@ -39,9 +39,21 @@ RSpec.describe User, type: :model do
     end
   end
 
-  it 'has_many posts' do
-    user = User.create params
-    expect(user.posts).to be
+  context 'has_many' do
+    it 'posts' do
+      user = User.create params
+      expect(user.posts).to be
+    end
+
+    it 'categories' do
+      user = User.create params
+      expect(user.posts).to be
+    end
+
+    it 'sessions' do
+      user = User.create params
+      expect(user.posts).to be
+    end
   end
 
   context 'has role' do
