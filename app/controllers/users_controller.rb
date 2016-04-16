@@ -29,7 +29,7 @@ class UsersController < ApplicationController
   private
 
   def check_permission
-    return render_forbidden unless @user == session_user
+    return render_forbidden unless @user == Session.current_user(user_token)
   end
 
   def set_user
@@ -38,11 +38,5 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:email, :login, :password)
-  end
-
-  # TODO: Refactoring
-  def session_user
-    session = Session.find_by(token: user_token)
-    session ? session.user : nil
   end
 end

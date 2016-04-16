@@ -1,7 +1,6 @@
 class Authorization
   def initialize(token, resource)
-    @token = token
-    @user = set_user
+    @user = Session.current_user(token)
     @resource = resource
   end
 
@@ -21,10 +20,5 @@ class Authorization
 
   def owner
     @resource ? (@resource.user == @user) : true
-  end
-
-  def set_user
-    session = Session.find_by(token: @token)
-    session ? session.user : nil
   end
 end
