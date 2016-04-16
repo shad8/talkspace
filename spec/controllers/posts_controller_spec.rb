@@ -1,12 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe PostsController, type: :controller do
-  let(:user_post) { create(:post) }
+  let(:user) do
+    create(:user_with_sessions, login: rand_text, email: rand_email)
+  end
+  let(:user_post) { create(:post, user: user) }
   let(:params) { attributes_for(:post) }
 
   before do
     request.env['HTTP_ACCEPT'] = 'application/json'
     request.env['HTTP_AUTHORIZATION'] = encoded_service_token
+    request.headers['X-User-Token'] = user.sessions.first.token
   end
 
   # TODO: All post by category
@@ -52,6 +56,14 @@ RSpec.describe PostsController, type: :controller do
       post :create, params: { post: params }
       expect(response).to have_http_status(:unprocessable_entity)
     end
+
+    it 'not acces for guest' do
+      request.headers['X-User-Token'] = rand_text
+      expect do
+        post :create, params: { post: params }
+      end.to change(Post, :count).by(0)
+      expect(response).to have_http_status(:forbidden)
+    end
   end
 
   describe 'PUT update' do
@@ -66,15 +78,31 @@ RSpec.describe PostsController, type: :controller do
       put :update, params: { id: user_post, post: params }
       expect(response).to have_http_status(:unprocessable_entity)
     end
+
+    it 'forbidden for not owner' do
+      user = create(:user_with_sessions, email: rand_email, login: rand_text)
+      request.headers['X-User-Token'] = user.sessions.first.token
+      put :update, params: { id: user_post, post: params }
+      expect(response).to have_http_status(:forbidden)
+    end
   end
 
   describe 'DELETE destroy' do
+    let!(:post) { create(:post, user: user) }
+
     it 'returns http :no_content' do
-      post = create(:post)
       expect do
         delete :destroy, params: { id: post }
       end.to change(Post, :count).by(-1)
       expect(response).to have_http_status(:no_content)
+    end
+
+    it 'forbidden for not owner' do
+      request.headers['X-User-Token'] = rand_text
+      expect do
+        delete :destroy, params: { id: post }
+      end.to change(Post, :count).by(0)
+      expect(response).to have_http_status(:forbidden)
     end
   end
 end
