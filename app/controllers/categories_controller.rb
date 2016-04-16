@@ -1,5 +1,6 @@
 class CategoriesController < ApplicationController
   before_action :set_category, only: [:show, :update, :destroy]
+  before_action :check_permission, except: [:index, :show]
 
   def index
     @categories = Category.all
@@ -34,5 +35,10 @@ class CategoriesController < ApplicationController
 
   def category_params
     params.require(:category).permit(:name, :user_id)
+  end
+
+  def check_permission
+    authorization = Authorization.new(user_token, @category)
+    return render_forbidden unless authorization.permitted
   end
 end

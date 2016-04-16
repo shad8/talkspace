@@ -3,6 +3,11 @@ class Session < ApplicationRecord
 
   before_create :generate_token
 
+  def self.current_user(token)
+    session = find_by(token: token)
+    session ? session.user : nil
+  end
+
   private
 
   def generate_token

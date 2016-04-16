@@ -5,9 +5,10 @@ RSpec.describe User, type: :model do
     { login: rand_text, password: 'secret', email: rand_text }
   end
 
+  subject { User.new params }
+
   it 'is valid' do
-    user = User.new params
-    expect(user.save!).to be_truthy
+    expect(subject.save!).to be_truthy
   end
 
   context 'is invalid' do
@@ -38,8 +39,31 @@ RSpec.describe User, type: :model do
     end
   end
 
-  it 'has_many posts' do
-    user = User.create params
-    expect(user.posts).to be
+  context 'has_many' do
+    it 'posts' do
+      user = User.create params
+      expect(user.posts).to be
+    end
+
+    it 'categories' do
+      user = User.create params
+      expect(user.posts).to be
+    end
+
+    it 'sessions' do
+      user = User.create params
+      expect(user.posts).to be
+    end
+  end
+
+  context 'has role' do
+    it 'default :user' do
+      expect(subject.user?).to be_truthy
+    end
+
+    it ':admin' do
+      subject.role = :admin
+      expect(subject.admin?).to be_truthy
+    end
   end
 end

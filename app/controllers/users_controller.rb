@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :update, :destroy]
+  before_action :check_permission, except: [:index, :show, :create]
 
   def index
     @users = User.all
@@ -26,6 +27,10 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def check_permission
+    return render_forbidden unless @user == Session.current_user(user_token)
+  end
 
   def set_user
     @user = User.find(params[:id])

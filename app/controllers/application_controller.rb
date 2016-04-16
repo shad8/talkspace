@@ -23,6 +23,10 @@ class ApplicationController < ActionController::Base
     t(key, scope: :errors)
   end
 
+  def render_forbidden
+    render json: { errors: errors(:forbidden) }, status: :forbidden
+  end
+
   def record_not_found
     render json: { errors: errors(:not_found) }, status: :not_found
   end

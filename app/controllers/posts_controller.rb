@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :update, :destroy]
+  before_action :check_permission, except: [:index, :show]
 
   def index
     @posts = Post.all
@@ -26,6 +27,11 @@ class PostsController < ApplicationController
   end
 
   private
+
+  def check_permission
+    authorization = Authorization.new(user_token, @post)
+    return render_forbidden unless authorization.permitted
+  end
 
   def set_post
     @post = Post.find(params[:id])

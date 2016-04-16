@@ -1,4 +1,5 @@
 errors:
+  forbidden: Forbidden
   invalid: Email or password was invalid
   unauthorized: Unauthorized
   not_found: Not Found
