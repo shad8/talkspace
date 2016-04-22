@@ -1,4 +1,4 @@
-module Api
+module Api::V1
   class CategoriesController < ApplicationController
     before_action :set_category, only: [:show, :update, :destroy]
     before_action :check_permission, except: [:index, :show]

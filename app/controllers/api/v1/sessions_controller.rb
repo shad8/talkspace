@@ -1,4 +1,4 @@
-module Api
+module Api::V1
   class SessionsController < ApplicationController
     before_action :set_user, only: [:create]
     before_action :set_token, only: [:update, :destroy]
