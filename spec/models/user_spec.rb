@@ -1,69 +1,22 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  let(:params) do
-    { login: rand_text, password: 'secret', email: rand_text }
+  it { is_expected.to have_many(:posts) }
+  it { is_expected.to have_many(:categories) }
+  it { is_expected.to have_many(:sessions) }
+
+  it { is_expected.to validate_presence_of(:login) }
+  it { is_expected.to validate_presence_of(:email) }
+
+  it 'can not create user with empty password' do
+    user = User.new(password: '', login: rand_text, email: rand_email)
+    expect(user).to_not be_valid
   end
 
-  subject { User.new params }
+  it { is_expected.to validate_uniqueness_of(:login) }
+  it { is_expected.to validate_uniqueness_of(:email) }
 
-  it 'is valid' do
-    expect(subject.save!).to be_truthy
-  end
+  it { is_expected.to validate_length_of(:password).is_at_least(5) }
 
-  context 'is invalid' do
-    [:login, :email, :password].each do |attribute|
-      it "for blank #{attribute}" do
-        params[attribute] = ''
-        user = User.new params
-        expect(user.save).to be_falsey
-      end
-    end
-
-    it 'for to short password ' do
-      params[:password] = rand_text(3)
-      user = User.new(params)
-      expect(user.save).to be_falsey
-    end
-
-    it 'for not unique login' do
-      params[:login] = create(:user).login
-      user = User.new(params)
-      expect(user.save).to be_falsey
-    end
-
-    it 'for not unique email' do
-      params[:email] = create(:user).email
-      user = User.new(params)
-      expect(user.save).to be_falsey
-    end
-  end
-
-  context 'has_many' do
-    it 'posts' do
-      user = User.create params
-      expect(user.posts).to be
-    end
-
-    it 'categories' do
-      user = User.create params
-      expect(user.posts).to be
-    end
-
-    it 'sessions' do
-      user = User.create params
-      expect(user.posts).to be
-    end
-  end
-
-  context 'has role' do
-    it 'default :user' do
-      expect(subject.user?).to be_truthy
-    end
-
-    it ':admin' do
-      subject.role = :admin
-      expect(subject.admin?).to be_truthy
-    end
-  end
+  it { is_expected.to define_enum_for(:role).with([:user, :admin]) }
 end
