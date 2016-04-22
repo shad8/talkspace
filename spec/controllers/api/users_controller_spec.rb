@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UsersController, type: :controller do
+RSpec.describe Api::UsersController, type: :controller do
   let!(:user) do
     create(:user_with_sessions, email: rand_email, login: rand_text)
   end
