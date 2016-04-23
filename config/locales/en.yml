@@ -2,6 +2,6 @@ en:
   errors:
     forbidden: Forbidden
     invalid: Email or password was invalid
-    unauthorized: Unauthorized
+    unauthorized: Bad credentials
     not_found: Not Found
 

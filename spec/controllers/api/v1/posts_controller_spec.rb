@@ -10,7 +10,7 @@ RSpec.describe Api::V1::PostsController, type: :controller do
 
   before do
     request.env['HTTP_ACCEPT'] = 'application/json'
-    request.env['HTTP_AUTHORIZATION'] = encoded_service_token
+    request.env['HTTP_AUTHORIZATION'] = encoded_service_token user.token
     request.headers['X-User-Token'] = user.sessions.first.token
   end
 
