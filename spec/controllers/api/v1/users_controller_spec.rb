@@ -5,6 +5,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     create(:user_with_sessions, email: rand_email, login: rand_text)
   end
   let(:params) { attributes_for(:user) }
+  let(:host) { 'http://api.example.com' }
 
   before do
     request.env['HTTP_ACCEPT'] = 'application/json'
@@ -12,79 +13,122 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     request.headers['X-User-Token'] = user.sessions.first.token
   end
 
+  it { is_expected.to use_before_action(:check_permission) }
+
   describe 'GET index' do
-    it 'returns http success' do
+    it do
+      is_expected.to route(:get, "#{host}/users")
+        .to(action: :index, subdomain: 'api', format: :json)
+    end
+
+    it 'returns http status code success' do
       create(:user)
       get :index
-      expect(response).to have_http_status(:success)
+      is_expected.to respond_with(:success)
       expect(response).to match_response_schema('users')
     end
   end
 
   describe 'POST create' do
-    it 'returns http created and save user' do
+    it do
+      is_expected.to route(:post, "#{host}/users")
+        .to(action: :create, subdomain: 'api', format: :json)
+    end
+
+    # TODO: DEPRECATION WARNING:
+    #       ActionController::TestCase HTTP request methods will accept only
+    #       keyword arguments in future Rails versions.
+    it 'restrict parameters on :user to :email, :login, :password' do
+      is_expected.to permit(:email, :login, :password)
+        .for(:create, params: { user: params }).on(:user)
+    end
+
+    it 'returns http status code created and save user' do
       expect do
         post :create, params: { user: params }
       end.to change(User, :count).by(1)
-      expect(response).to have_http_status(:created)
+      is_expected.to respond_with(:created)
       expect(response).to match_response_schema('user')
     end
 
-    it 'return http unprocessable_entity and not create user' do
+    it 'returns http status code unprocessable_entity for not unique login' do
       params[:login] = user.login
       post :create, params: { user: params }
-      expect(response).to have_http_status(:unprocessable_entity)
+      is_expected.to respond_with(:unprocessable_entity)
     end
   end
 
   describe 'GET show' do
-    it 'returns http success' do
+    it do
+      is_expected.to route(:get, "#{host}/users/#{user.id}")
+        .to(action: :show, subdomain: 'api', format: :json, id: user.id)
+    end
+
+    it 'returns http status code success' do
       get :show, params: { id: user }
-      expect(response).to have_http_status(:success)
+      is_expected.to respond_with(:success)
       expect(response).to match_response_schema('user')
     end
 
-    it 'returns http not_found' do
+    it 'returns http status code not_found' do
       rand_id = rand(5) + 100
       get :show, params: { id: rand_id }
-      expect(response).to have_http_status(:not_found)
+      is_expected.to respond_with(:not_found)
     end
   end
 
   describe 'PUT update' do
-    it 'returns http no_content' do
+    it do
+      is_expected.to route(:put, "#{host}/users/#{user.id}")
+        .to(action: :update, subdomain: 'api', format: :json, id: user.id)
+    end
+
+    # TODO: DEPRECATION WARNING:
+    #       ActionController::TestCase HTTP request methods will accept only
+    #       keyword arguments in future Rails versions.
+    it 'restrict parameters on :user to :email, :login, :password' do
+      is_expected.to permit(:email, :login, :password)
+        .for(:update, params: { id: user, user: params }).on(:user)
+    end
+
+    it 'returns http status code no_content' do
       params[:email] = rand_email
       put :update, params: { id: user, user: params }
-      expect(response).to have_http_status(:no_content)
+      is_expected.to respond_with(:no_content)
     end
 
-    it 'returns http unprocessable_entity with empty login' do
+    it 'returns http status code unprocessable_entity with empty login' do
       params[:login] = ''
       put :update, params: { id: user, user: params }
-      expect(response).to have_http_status(:unprocessable_entity)
+      is_expected.to respond_with(:unprocessable_entity)
     end
 
-    it 'forbidden for not owner' do
+    it 'returns http status code forbidden for not owner' do
       request.headers['X-User-Token'] = rand_text
       put :update, params: { id: user, user: params }
-      expect(response).to have_http_status(:forbidden)
+      is_expected.to respond_with(:forbidden)
     end
   end
 
   describe 'DELETE destroy' do
-    it 'returns http :no_content' do
+    it do
+      is_expected.to route(:delete, "#{host}/users/#{user.id}")
+        .to(action: :destroy, subdomain: 'api', format: :json, id: user.id)
+    end
+
+    it 'returns http status code :no_content' do
       expect do
         delete :destroy, params: { id: user }
       end.to change(User, :count).by(-1)
-      expect(response).to have_http_status(:no_content)
+      is_expected.to respond_with(:no_content)
     end
 
-    it 'forbidden for not owner' do
+    it 'returns http status code forbidden for not owner' do
       request.headers['X-User-Token'] = rand_text
       expect do
         delete :destroy, params: { id: user }
       end.to change(User, :count).by(0)
-      expect(response).to have_http_status(:forbidden)
+      is_expected.to respond_with(:forbidden)
     end
   end
 end
