@@ -45,7 +45,7 @@ RSpec.describe Api::V1::CategoriesController, type: :controller do
     it 'returns http status code not_found' do
       rand_id = rand(5) + 100
       get :show, params: { id: rand_id }
-      expect(response).to have_http_status(:not_found)
+      is_expected.to respond_with(:not_found)
     end
   end
 
