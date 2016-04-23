@@ -3,7 +3,8 @@
   "properties": {
     "id": { "type": "integer" },
     "login": { "type": "string" },
-    "email": { "type": "string" }
+    "email": { "type": "string" },
+    "token": { "type": "string" }
   }
 }
 

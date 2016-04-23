@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::UsersController, type: :controller do
-  let!(:user) do
-    create(:user_with_sessions, email: rand_email, login: rand_text)
-  end
+  let!(:user) { create(:user, email: rand_email, login: rand_text) }
   let(:params) { attributes_for(:user) }
   let(:host) { 'http://api.example.com' }
 
@@ -103,6 +101,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     end
 
     it 'returns http status code forbidden for not owner' do
+      token = create(:user, email: rand_email, login: rand_text).token
+      request.env['HTTP_AUTHORIZATION'] = encoded_service_token token
       put :update, params: { id: user, user: params }
       is_expected.to respond_with(:forbidden)
     end
@@ -122,6 +122,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     end
 
     it 'returns http status code forbidden for not owner' do
+      token = create(:user, email: rand_email, login: rand_text).token
+      request.env['HTTP_AUTHORIZATION'] = encoded_service_token token
       expect do
         delete :destroy, params: { id: user }
       end.to change(User, :count).by(0)

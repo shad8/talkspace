@@ -1,7 +1,7 @@
 module Api::V1
   class UsersController < ApplicationController
     before_action :set_user, only: [:show, :update, :destroy]
-    # before_action :check_permission, except: [:index, :show, :create]
+    before_action :check_permission, except: [:index, :show, :create]
 
     def index
       @users = User.all
@@ -30,7 +30,7 @@ module Api::V1
     private
 
     def check_permission
-      return render_forbidden unless @user == Session.current_user(user_token)
+      return render_forbidden unless @user == @current_user
     end
 
     def set_user

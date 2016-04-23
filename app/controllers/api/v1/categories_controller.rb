@@ -1,7 +1,7 @@
 module Api::V1
   class CategoriesController < ApplicationController
     before_action :set_category, only: [:show, :update, :destroy]
-    # before_action :check_permission, except: [:index, :show]
+    before_action :check_permission, except: [:index, :show]
 
     def index
       @categories = Category.all
@@ -39,7 +39,7 @@ module Api::V1
     end
 
     def check_permission
-      authorization = Authorization.new(user_token, @category)
+      authorization = Authorization.new(@current_user, @category)
       return render_forbidden unless authorization.permitted
     end
   end

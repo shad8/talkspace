@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::CategoriesController, type: :controller do
-  let(:user) do
-    create(:user, login: rand_text, email: rand_email)
-  end
+  let(:user) { create(:user, login: rand_text, email: rand_email) }
   let!(:category) { create(:category_with_posts, name: rand_text, user: user) }
   let(:params) { attributes_for(:category) }
   let(:host) { 'http://api.example.com' }
@@ -70,11 +68,13 @@ RSpec.describe Api::V1::CategoriesController, type: :controller do
       expect(response).to match_response_schema('category')
     end
 
-    it 'for not acces for guest returns http status code forbidden' do
+    it 'for not acces for guest returns http status code unauthorized' do
+      request.env['HTTP_AUTHORIZATION'] = ''
+
       expect do
         post :create, params: { category: params }
       end.to change(Category, :count).by(0)
-      expect(response).to have_http_status(:forbidden)
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
@@ -105,8 +105,8 @@ RSpec.describe Api::V1::CategoriesController, type: :controller do
     end
 
     it 'returns http status code forbidden for not owner' do
-      user = create(:user_with_sessions, email: rand_email, login: rand_text)
-      request.headers['X-User-Token'] = user.sessions.first.token
+      token = create(:user, email: rand_email, login: rand_text).token
+      request.env['HTTP_AUTHORIZATION'] = encoded_service_token token
       put :update, params: { id: category, category: params }
       is_expected.to respond_with(:forbidden)
     end
@@ -133,7 +133,8 @@ RSpec.describe Api::V1::CategoriesController, type: :controller do
     end
 
     it 'returns http status code forbidden for not owner' do
-      user = create(:user_with_sessions, email: rand_email, login: rand_text)
+      token = create(:user, email: rand_email, login: rand_text).token
+      request.env['HTTP_AUTHORIZATION'] = encoded_service_token token
       put :update, params: { id: category, category: params }
       is_expected.to respond_with(:forbidden)
     end
