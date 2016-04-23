@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SessionsController, type: :controller do
+RSpec.describe Api::V1::SessionsController, type: :controller do
   let!(:user) { create(:user) }
   let(:session) { create(:session, user_id: user.id) }
   let(:params) { attributes_for(:user) }

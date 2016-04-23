@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe CategoriesController, type: :controller do
+RSpec.describe Api::V1::CategoriesController, type: :controller do
   let(:user) do
     create(:user_with_sessions, login: rand_text, email: rand_email)
   end

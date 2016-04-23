@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe PostsController, type: :controller do
+RSpec.describe Api::V1::PostsController, type: :controller do
   let(:user) do
     create(:user_with_sessions, login: rand_text, email: rand_email)
   end
