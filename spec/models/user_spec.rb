@@ -8,6 +8,8 @@ RSpec.describe User, type: :model do
   it { is_expected.to validate_presence_of(:login) }
   it { is_expected.to validate_presence_of(:email) }
 
+  it { is_expected.to callback(:generate_token).before(:create) }
+
   it 'can not create user with empty password' do
     user = User.new(password: '', login: rand_text, email: rand_email)
     expect(user).to_not be_valid
