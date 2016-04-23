@@ -10,7 +10,6 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   before do
     request.env['HTTP_ACCEPT'] = 'application/json'
     request.env['HTTP_AUTHORIZATION'] = encoded_service_token user.token
-    request.headers['X-User-Token'] = user.sessions.first.token
   end
 
   it { is_expected.to use_before_action(:check_permission) }
@@ -104,7 +103,6 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     end
 
     it 'returns http status code forbidden for not owner' do
-      request.headers['X-User-Token'] = rand_text
       put :update, params: { id: user, user: params }
       is_expected.to respond_with(:forbidden)
     end
@@ -124,7 +122,6 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     end
 
     it 'returns http status code forbidden for not owner' do
-      request.headers['X-User-Token'] = rand_text
       expect do
         delete :destroy, params: { id: user }
       end.to change(User, :count).by(0)

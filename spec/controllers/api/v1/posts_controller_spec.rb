@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::PostsController, type: :controller do
   let(:user) do
-    create(:user_with_sessions, login: rand_text, email: rand_email)
+    create(:user, login: rand_text, email: rand_email)
   end
   let(:user_post) { create(:post, user: user) }
   let(:params) { attributes_for(:post) }
@@ -11,7 +11,6 @@ RSpec.describe Api::V1::PostsController, type: :controller do
   before do
     request.env['HTTP_ACCEPT'] = 'application/json'
     request.env['HTTP_AUTHORIZATION'] = encoded_service_token user.token
-    request.headers['X-User-Token'] = user.sessions.first.token
   end
 
   it { is_expected.to use_before_action(:check_permission) }
@@ -85,7 +84,6 @@ RSpec.describe Api::V1::PostsController, type: :controller do
     end
 
     it 'for not acces for guest returns http status code forbidden' do
-      request.headers['X-User-Token'] = rand_text
       expect do
         post :create, params: { post: params }
       end.to change(Post, :count).by(0)
@@ -122,7 +120,6 @@ RSpec.describe Api::V1::PostsController, type: :controller do
 
     it 'returns http status code forbidden for not owner' do
       user = create(:user_with_sessions, email: rand_email, login: rand_text)
-      request.headers['X-User-Token'] = user.sessions.first.token
       put :update, params: { id: user_post, post: params }
       is_expected.to respond_with(:forbidden)
     end
@@ -144,7 +141,6 @@ RSpec.describe Api::V1::PostsController, type: :controller do
     end
 
     it 'returns http status code forbidden for not owner' do
-      request.headers['X-User-Token'] = rand_text
       expect do
         delete :destroy, params: { id: post }
       end.to change(Post, :count).by(0)

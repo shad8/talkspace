@@ -1,7 +1,7 @@
 module Api::V1
   class PostsController < ApplicationController
     before_action :set_post, only: [:show, :update, :destroy]
-    before_action :check_permission, except: [:index, :show]
+    # before_action :check_permission, except: [:index, :show]
 
     def index
       @posts = Post.all
