@@ -5,7 +5,7 @@ class ApiVersion
   end
 
   def matches?(request)
-    @default || check_headers(request.check_headers)
+    @default || check_headers(request.headers)
   end
 
   private
