@@ -1,6 +1,6 @@
 class Authorization
-  def initialize(token, resource)
-    @user = Session.current_user(token)
+  def initialize(user, resource)
+    @user = user
     @resource = resource
   end
 

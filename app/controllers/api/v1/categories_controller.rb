@@ -39,7 +39,7 @@ module Api::V1
     end
 
     def check_permission
-      authorization = Authorization.new(user_token, @category)
+      authorization = Authorization.new(@current_user, @category)
       return render_forbidden unless authorization.permitted
     end
   end

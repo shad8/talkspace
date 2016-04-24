@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
 
   def authenticate_token
     authenticate_with_http_token do |token|
-      Rails.application.secrets.authenticate_token == token
+      @current_user = User.find_by(token: token)
     end
   end
 

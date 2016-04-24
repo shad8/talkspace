@@ -14,7 +14,8 @@ module Api::V1
 
     def create
       @user = User.create(user_params)
-      respond_with @user, location: nil
+      respond_with @user, location: nil, serializer: UserWithTokenSerializer,
+                          root: 'user'
     end
 
     def update
@@ -30,7 +31,7 @@ module Api::V1
     private
 
     def check_permission
-      return render_forbidden unless @user == Session.current_user(user_token)
+      return render_forbidden unless @user == @current_user
     end
 
     def set_user

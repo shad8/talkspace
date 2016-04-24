@@ -1,9 +1,0 @@
-{
-  "type": "object",
-  "properties": {
-    "id": { "type": "integer" },
-    "token": { "type": "string" },
-    "user_id": { "type": "integer" }
-  }
-}
-

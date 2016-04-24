@@ -1,17 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::PostsController, type: :controller do
-  let(:user) do
-    create(:user_with_sessions, login: rand_text, email: rand_email)
-  end
+  let(:user) { create(:user, login: rand_text, email: rand_email) }
   let(:user_post) { create(:post, user: user) }
   let(:params) { attributes_for(:post) }
   let(:host) { 'http://api.example.com' }
 
   before do
     request.env['HTTP_ACCEPT'] = 'application/json'
-    request.env['HTTP_AUTHORIZATION'] = encoded_service_token
-    request.headers['X-User-Token'] = user.sessions.first.token
+    request.env['HTTP_AUTHORIZATION'] = encoded_service_token user.token
   end
 
   it { is_expected.to use_before_action(:check_permission) }
@@ -84,12 +81,12 @@ RSpec.describe Api::V1::PostsController, type: :controller do
       is_expected.to respond_with(:unprocessable_entity)
     end
 
-    it 'for not acces for guest returns http status code forbidden' do
-      request.headers['X-User-Token'] = rand_text
+    it 'for not acces for guest returns http status code unauthorized' do
+      request.env['HTTP_AUTHORIZATION'] = ''
       expect do
         post :create, params: { post: params }
       end.to change(Post, :count).by(0)
-      is_expected.to respond_with(:forbidden)
+      is_expected.to respond_with(:unauthorized)
     end
   end
 
@@ -121,8 +118,8 @@ RSpec.describe Api::V1::PostsController, type: :controller do
     end
 
     it 'returns http status code forbidden for not owner' do
-      user = create(:user_with_sessions, email: rand_email, login: rand_text)
-      request.headers['X-User-Token'] = user.sessions.first.token
+      token = create(:user, email: rand_email, login: rand_text).token
+      request.env['HTTP_AUTHORIZATION'] = encoded_service_token token
       put :update, params: { id: user_post, post: params }
       is_expected.to respond_with(:forbidden)
     end
@@ -144,7 +141,8 @@ RSpec.describe Api::V1::PostsController, type: :controller do
     end
 
     it 'returns http status code forbidden for not owner' do
-      request.headers['X-User-Token'] = rand_text
+      token = create(:user, email: rand_email, login: rand_text).token
+      request.env['HTTP_AUTHORIZATION'] = encoded_service_token token
       expect do
         delete :destroy, params: { id: post }
       end.to change(Post, :count).by(0)

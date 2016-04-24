@@ -30,7 +30,7 @@ module Api::V1
     private
 
     def check_permission
-      authorization = Authorization.new(user_token, @post)
+      authorization = Authorization.new(@current_user, @post)
       return render_forbidden unless authorization.permitted
     end
 
