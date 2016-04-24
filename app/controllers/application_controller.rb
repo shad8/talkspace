@@ -8,12 +8,12 @@ class ApplicationController < ActionController::Base
   private
 
   def authenticate
-    authenticate_token || render_unauthenticate
+    @current_user = authenticate_token || Guest.new
   end
 
   def authenticate_token
     authenticate_with_http_token do |token|
-      @current_user = User.find_by(token: token)
+      User.find_by(token: token)
     end
   end
 

@@ -19,5 +19,23 @@ RSpec.describe User, type: :model do
 
   it { is_expected.to validate_length_of(:password).is_at_least(5) }
 
-  it { is_expected.to define_enum_for(:role).with([:user, :admin]) }
+  it { is_expected.to define_enum_for(:role).with([:user, :admin, :guest]) }
+
+  describe '#owner?' do
+    let(:user) { create(:user) }
+
+    it 'for nil resource should be true' do
+      expect(user.owner?).to be_truthy
+    end
+
+    it 'for corresponding resource should be true' do
+      object = FakeObject.new user.id
+      expect(user.owner?(object)).to be_truthy
+    end
+
+    it 'for not corresponding resource should be true' do
+      object = FakeObject.new rand(10) + 10
+      expect(user.owner?(object)).to be_falsey
+    end
+  end
 end

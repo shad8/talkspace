@@ -9,9 +9,13 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :password, presence: true, length: { minimum: 5 }
 
-  enum role: [:user, :admin]
+  enum role: [:user, :admin, :guest]
 
   before_create :generate_token
+
+  def owner?(resource = nil)
+    resource ? resource.user_id == id : true
+  end
 
   private
 

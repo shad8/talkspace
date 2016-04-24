@@ -68,13 +68,13 @@ RSpec.describe Api::V1::CategoriesController, type: :controller do
       expect(response).to match_response_schema('category')
     end
 
-    it 'for not acces for guest returns http status code unauthorized' do
+    it 'for not acces for guest returns http status code forbidden' do
       request.env['HTTP_AUTHORIZATION'] = ''
 
       expect do
         post :create, params: { category: params }
       end.to change(Category, :count).by(0)
-      expect(response).to have_http_status(:unauthorized)
+      expect(response).to have_http_status(:forbidden)
     end
   end
 

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Authorization, type: :class do
   describe '#permitted' do
     let!(:user) { create(:user) }
-    let(:object) { FakeObject.new user }
+    let(:object) { FakeObject.new user.id }
 
     context 'should be true' do
       it 'for admin' do
@@ -16,11 +16,12 @@ RSpec.describe Authorization, type: :class do
         authorization = Authorization.new(user, object)
         expect(authorization.permitted).to be_truthy
       end
+    end
 
-      it 'for user when resource is not set' do
-        authorization = Authorization.new(user, nil)
-        expect(authorization.permitted).to be_truthy
-      end
+    it 'should be false for guest' do
+      user = Guest.new
+      authorization = Authorization.new(user, nil)
+      expect(authorization.permitted).to be_falsey
     end
   end
 end
