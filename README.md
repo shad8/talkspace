@@ -11,11 +11,11 @@ rake db:create
 rake db:migrate
 rake db:seed
 ```
-## Api example:
+## Api examples:
 ### User
 1. LIST OF USERS
 ```sh
-$curl -X GET -H "Accept: application/vnd.api.v1+json" -H "Content-Type: application/json" -H "Authorization: Token token=\"964511a3b2755c8a9724fd616fef0480a06704ce307e51484303c9021d72d96adaad464c40cc198f393cffa961f23c8a9c41b878d96eef40ccac9da542c62179\"" http://api.example.com:3000/users
+$ curl -X GET -H "Accept: application/vnd.api.v1+json" -H "Content-Type: application/json" http://api.example.com:3000/users
 ```
 ```
 {
@@ -42,7 +42,7 @@ $ curl -v -H "Accept: application/vnd.api.v1+json" -H "Content-type: application
 ```
 3. GET USER
 ```sh
-$ curl -X GET -H "Accept: application/vnd.api.v1+json" -H "Content-Type: application/json" -H "Authorization: Token token=\"964511a3b2755c8a9724fd616fef0480a06704ce307e51484303c9021d72d96adaad464c40cc198f393cffa961f23c8a9c41b878d96eef40ccac9da542c62179\"" http://api.example.com:3000/users/1
+$ curl -X GET -H "Accept: application/vnd.api.v1+json" -H "Content-Type: application/json" http://api.example.com:3000/users/1
 ```
 ```
 {
@@ -58,7 +58,7 @@ $ curl -X DELETE -H "Accept: application/vnd.api.v1+json" -H "Content-Type: appl
 ### Category
 1. LIST OF CATEGORIES
 ```sh
-$ curl -X GET -H "Accept: application/vnd.api.v1+json" -H "Content-Type: application/json" -H "Authorization: Token token=\"964511a3b2755c8a9724fd616fef0480a06704ce307e51484303c9021d72d96adaad464c40cc198f393cffa961f23c8a9c41b878d96eef40ccac9da542c62179\"" http://api.example.com:3000/categories
+$ curl -X GET -H "Accept: application/vnd.api.v1+json" -H "Content-Type: application/json" http://api.example.com:3000/categories
 ```
 ```
 {
@@ -84,7 +84,7 @@ $ curl -v -H "Accept: application/vnd.api.v1+json" -H "Content-type: application
 ```
 3. GET CATEGORY
 ```sh
-$ curl -X GET -H "Accept: application/vnd.api.v1+json" -H "Content-Type: application/json" -H "Authorization: Token token=\"5c70b033013921cfb9a9aac239164e6000bff0bbd1ec6c6d91f01624c772bedcca26a5091c5b670a031fe0d4de46ea8c26d12d2d2c34bb03053d21d01be54150\"" http://api.example.com:3000/categories/1
+$ curl -X GET -H "Accept: application/vnd.api.v1+json" -H "Content-Type: application/json" http://api.example.com:3000/categories/1
 ```
 ```
 {
@@ -105,7 +105,7 @@ $ curl -X GET -H "Accept: application/vnd.api.v1+json" -H "Content-Type: applica
 ### Post
 1. GET POSTS
 ```sh
-$ curl -X GET -H "Accept: application/vnd.api.v1+json" -H "Content-Type: application/json" -H "Authorization: Token token=\"5c70b033013921cfb9a9aac239164e6000bff0bbd1ec6c6d91f01624c772bedcca26a5091c5b670a031fe0d4de46ea8c26d12d2d2c34bb03053d21d01be54150\"" http://api.example.com:3000/posts/1
+$ curl -X GET -H "Accept: application/vnd.api.v1+json" -H "Content-Type: application/json" http://api.example.com:3000/posts/1
 ```
 ```
 {
