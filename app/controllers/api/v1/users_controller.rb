@@ -14,7 +14,8 @@ module Api::V1
 
     def create
       @user = User.create(user_params)
-      respond_with @user, location: nil
+      respond_with @user, location: nil, serializer: UserWithTokenSerializer,
+                          root: 'user'
     end
 
     def update

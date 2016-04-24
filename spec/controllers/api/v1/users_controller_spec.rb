@@ -45,7 +45,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         post :create, params: { user: params }
       end.to change(User, :count).by(1)
       is_expected.to respond_with(:created)
-      expect(response).to match_response_schema('user')
+      expect(response).to match_response_schema('user_with_token')
     end
 
     it 'returns http status code unprocessable_entity for not unique login' do

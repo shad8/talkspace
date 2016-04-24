@@ -37,8 +37,3 @@ Post.create([
                 category: categories.last
               }
             ])
-
-Session.create([
-                  { token: SecureRandom.hex, user: users.first },
-                  { token: SecureRandom.hex, user: users.last }
-              ])
