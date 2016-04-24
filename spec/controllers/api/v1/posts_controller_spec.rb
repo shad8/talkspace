@@ -81,12 +81,12 @@ RSpec.describe Api::V1::PostsController, type: :controller do
       is_expected.to respond_with(:unprocessable_entity)
     end
 
-    it 'for not acces for guest returns http status code unauthorized' do
+    it 'for not acces for guest returns http status code forbidden' do
       request.env['HTTP_AUTHORIZATION'] = ''
       expect do
         post :create, params: { post: params }
       end.to change(Post, :count).by(0)
-      is_expected.to respond_with(:unauthorized)
+      is_expected.to respond_with(:forbidden)
     end
   end
 

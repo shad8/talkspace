@@ -1,7 +1,7 @@
 class FakeObject
-  attr_reader :user
+  attr_reader :user_id
 
-  def initialize(user)
-    @user = user
+  def initialize(id)
+    @user_id = id
   end
 end

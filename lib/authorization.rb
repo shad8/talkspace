@@ -19,6 +19,6 @@ class Authorization
   end
 
   def owner
-    @resource ? (@resource.user == @user) : true
+    @user.owner? @resource
   end
 end
